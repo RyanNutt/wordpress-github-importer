@@ -43,6 +43,17 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( 'master', $gf->get_branch() );
     $this->assertEquals( 'readme.md', $gf->get_filename() );
   }
+  
+  public function testFileInFolder(): void {
+    $gf = new GitHubFile('https://github.com/RyanNutt/wordpress-github-importer/blob/master/_inc/Import.php'); 
+    $this->assertEquals( 'github', $gf->get_type() );
+    $this->assertEquals( true, $gf->is_github() );
+    $this->assertEquals( false, $gf->is_gist() );
+    $this->assertEquals( 'RyanNutt', $gf->get_owner() );
+    $this->assertEquals( 'wordpress-github-importer', $gf->get_repo() );
+    $this->assertEquals( 'master', $gf->get_branch() );
+    $this->assertEquals( '_inc/Import.php', $gf->get_filename() );
+  }
 
   public function testSomeoneElse(): void {
     $gf = new GitHubFile( 'https://github.com/timhunt/moodle-availability_quizquestion/blob/master/changes.md' );

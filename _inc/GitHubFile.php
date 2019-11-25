@@ -4,7 +4,12 @@ namespace Aelora\WordPress\GitHub;
 
 /**
  * Information about a single file from GitHub along with methods for pulling
- * the contents from the GitHub API
+ * the contents from the GitHub API.
+ * 
+ * It may actually be multiple files if the URL is a Gist and no file is
+ * specified. In that case it'll pull all the files, but only include the
+ * first one in the data. The filename isn't known until the API result
+ * comes back. 
  */
 class GitHubFile {
 
@@ -40,13 +45,19 @@ class GitHubFile {
     $url_parts[ 'host' ] = preg_replace( '/^www\./', '', strtolower( $url_parts[ 'host' ] ) );
     if ( $url_parts[ 'host' ] == 'github.com' ) {
       $this->type = 'github';
-      $path_parts = explode( '/', ltrim( $url_parts[ 'path' ], '/' ) );
-
-      $this->owner = $path_parts[ 0 ];
-      $this->repo = $path_parts[ 1 ];
-
-      $this->branch = isset( $path_parts[ 3 ] ) ? $path_parts[ 3 ] : 'master';
-      $this->filename = isset( $path_parts[ 4 ] ) ? $path_parts[ 4 ] : 'readme.md';
+      $url_parts['path'] = ltrim($url_parts['path'], '/');
+      if ( preg_match( '/^([A-Za-z0-9\-_]+?)\/([A-Za-z0-9\-_]+?)\/blob\/([a-zA-Z0-9\-_]+?)\/(.*)$/', $url_parts[ 'path' ], $matches ) ) {
+        $this->owner = $matches[1];
+        $this->repo = $matches[2];
+        $this->branch = $matches[3];
+        $this->filename = $matches[4];
+      }
+      else if (preg_match('/^([A-Za-z0-9\-_]+?)\/([A-Za-z0-9\-_]+?)$/', $url_parts['path'], $matches)) {
+        $this->owner = $matches[1];
+        $this->repo = $matches[2];
+        $this->branch = 'master';
+        $this->filename = 'readme.md'; 
+      }
     }
     else if ( $url_parts[ 'host' ] == 'gist.github.com' ) {
       $this->type = 'gist';
@@ -99,6 +110,18 @@ class GitHubFile {
 
   public function get_hash() {
     return $this->hash;
+  }
+
+  /**
+   * Returns the URL for the API endpoint to get the data requested. 
+   */
+  public function api_url() {
+    if ( $this->is_github() ) {
+      //$url = 'https://api.github.com/repos/' . $this->get_owner() . '/'. $this->get_repo() . '/contents/' . :owner/:repo/contents/:path
+    }
+    else if ( $this->is_gist() ) {
+      
+    }
   }
 
 }
