@@ -13,9 +13,10 @@ class GitHubFile {
   private $owner = false;
   private $repo = false;
   private $filename = false;
+  private $hash = false; // gist hash
 
   public function __construct( $url = false ) {
-    $this->set_url( $url ? $url : '' );
+    $this->set_url( $url ? $url : ''  );
   }
 
   public function set_url( $url ) {
@@ -23,35 +24,49 @@ class GitHubFile {
     $this->branch = false;
     $this->owner = false;
     $this->filename = false;
-    $this->repo = false; 
-    
-    if (strpos($url, 'github.com') === false) {
-      throw new \InvalidArgumentException('URL does not appear to be a GitHub address'); 
+    $this->repo = false;
+    $this->hash = false;
+
+    if ( strpos( $url, 'github.com' ) === false ) {
+      throw new \InvalidArgumentException( 'URL does not appear to be a GitHub address' );
     }
-    
-    if (!preg_match('/^(http)?s?:?\/\//i', $url)) {
+
+    if ( ! preg_match( '/^(http)?s?:?\/\//i', $url ) ) {
       $url = '//' . $url;
     }
-           
-    $url_parts = parse_url($url);
-    
-    $url_parts['host'] = preg_replace('/^www\./', '', strtolower($url_parts['host']));
-    if ($url_parts['host'] == 'github.com') {
-      $this->type = 'github'; 
+
+    $url_parts = parse_url( $url );
+
+    $url_parts[ 'host' ] = preg_replace( '/^www\./', '', strtolower( $url_parts[ 'host' ] ) );
+    if ( $url_parts[ 'host' ] == 'github.com' ) {
+      $this->type = 'github';
+      $path_parts = explode( '/', ltrim( $url_parts[ 'path' ], '/' ) );
+
+      $this->owner = $path_parts[ 0 ];
+      $this->repo = $path_parts[ 1 ];
+
+      $this->branch = isset( $path_parts[ 3 ] ) ? $path_parts[ 3 ] : 'master';
+      $this->filename = isset( $path_parts[ 4 ] ) ? $path_parts[ 4 ] : 'readme.md';
     }
-    else if ($url_parts['host'] == 'gist.github.com') {
-      $this->type = 'gist'; 
+    else if ( $url_parts[ 'host' ] == 'gist.github.com' ) {
+      $this->type = 'gist';
+      $path_parts = explode( '/', ltrim( $url_parts[ 'path' ], '/' ) );
+      if ( count( $path_parts ) == 1 ) {
+        $this->owner = false;
+        $this->hash = $path_parts[ 0 ];
+      }
+      else if ( count( $path_parts ) == 2 ) {
+        $this->owner = $path_parts[ 0 ];
+        $this->hash = $path_parts[ 1 ];
+      }
+
+      if ( ! empty( $url_parts[ 'fragment' ] ) && preg_match( '/^file-/', $url_parts[ 'fragment' ] ) ) {
+        $this->filename = preg_replace( '/^file-/', '', $url_parts[ 'fragment' ] );
+      }
     }
     else {
-      throw new \InvalidArgumentException('URL does not appear to be a GitHub address'); 
+      throw new \InvalidArgumentException( 'URL does not appear to be a GitHub address' );
     }
-    
-    $path_parts = explode('/', $url_parts['path']);
-    print_r($path_parts);
-    $this->owner = $path_parts[1];
-    $this->repo = $path_parts[2];
-    
-    print_r($url_parts); 
   }
 
   public function get_type() {
@@ -80,6 +95,10 @@ class GitHubFile {
 
   public function is_gist() {
     return $this->type == 'gist';
+  }
+
+  public function get_hash() {
+    return $this->hash;
   }
 
 }
