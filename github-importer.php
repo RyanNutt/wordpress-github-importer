@@ -14,3 +14,6 @@
  * Text Domain:       github-importer
  */
 require_once(__DIR__ . '/_inc/Import.php');
+require_once(__DIR__ . '/_inc/Shortcodes.php');
+require_once(__DIR__ . '/_inc/GitHubFile.php');
+require_once(__DIR__ . '/_inc/Output.php'); 

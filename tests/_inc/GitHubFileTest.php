@@ -31,6 +31,7 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( 'wordpress-whoops', $gf->get_repo(), 'Repo name does not match' );
     $this->assertEquals( 'master', $gf->get_branch(), 'Branch does not match' );
     $this->assertEquals( 'readme.md', $gf->get_filename(), 'Filename does not match' );
+    $this->assertEquals( 'https://api.github.com/repos/RyanNutt/wordpress-whoops/contents/readme.md', $gf->api_url(), 'API url incorrect' );
   }
 
   public function testRepoOnly(): void {
@@ -42,10 +43,11 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( 'wordpress-whoops', $gf->get_repo() );
     $this->assertEquals( 'master', $gf->get_branch() );
     $this->assertEquals( 'readme.md', $gf->get_filename() );
+    $this->assertEquals( 'https://api.github.com/repos/RyanNutt/wordpress-whoops/contents/readme.md', $gf->api_url(), 'API url incorrect' );
   }
-  
+
   public function testFileInFolder(): void {
-    $gf = new GitHubFile('https://github.com/RyanNutt/wordpress-github-importer/blob/master/_inc/Import.php'); 
+    $gf = new GitHubFile( 'https://github.com/RyanNutt/wordpress-github-importer/blob/master/_inc/Import.php' );
     $this->assertEquals( 'github', $gf->get_type() );
     $this->assertEquals( true, $gf->is_github() );
     $this->assertEquals( false, $gf->is_gist() );
@@ -53,6 +55,7 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( 'wordpress-github-importer', $gf->get_repo() );
     $this->assertEquals( 'master', $gf->get_branch() );
     $this->assertEquals( '_inc/Import.php', $gf->get_filename() );
+    $this->assertEquals( 'https://api.github.com/repos/RyanNutt/wordpress-github-importer/contents/_inc/Import.php', $gf->api_url(), 'API url incorrect' );
   }
 
   public function testSomeoneElse(): void {
@@ -64,6 +67,7 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( 'moodle-availability_quizquestion', $gf->get_repo() );
     $this->assertEquals( 'master', $gf->get_branch() );
     $this->assertEquals( 'changes.md', $gf->get_filename() );
+    $this->assertEquals( 'https://api.github.com/repos/timhunt/moodle-availability_quizquestion/contents/changes.md', $gf->api_url(), 'API url incorrect' );
   }
 
   public function testOtherBranch(): void {
@@ -75,6 +79,7 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( 'zjsonpatch', $gf->get_repo() );
     $this->assertEquals( 'copy-test-op', $gf->get_branch() );
     $this->assertEquals( 'README.md', $gf->get_filename() );
+    $this->assertEquals( 'https://api.github.com/repos/flipkart-incubator/zjsonpatch/contents/README.md?ref=copy-test-op', $gf->api_url(), 'API url incorrect' );
   }
 
   public function testGistNoFile(): void {
@@ -106,7 +111,7 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( '0776832fc36f0384d7a715fb5bbe5e86', $gf->get_hash() );
     $this->assertEquals( 'github-classroom-travis-badge-js', $gf->get_filename() );
   }
-  
+
   public function testGistFilenameNoOwner(): void {
     $gf = new GitHubFile( 'https://gist.github.com/0776832fc36f0384d7a715fb5bbe5e86#file-github-classroom-travis-badge-js' );
     $this->assertEquals( 'gist', $gf->get_type() );
@@ -116,5 +121,6 @@ final class GitHubFileTest extends TestCase {
     $this->assertEquals( '0776832fc36f0384d7a715fb5bbe5e86', $gf->get_hash() );
     $this->assertEquals( 'github-classroom-travis-badge-js', $gf->get_filename() );
   }
+  
 
 }

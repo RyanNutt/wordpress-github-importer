@@ -45,18 +45,18 @@ class GitHubFile {
     $url_parts[ 'host' ] = preg_replace( '/^www\./', '', strtolower( $url_parts[ 'host' ] ) );
     if ( $url_parts[ 'host' ] == 'github.com' ) {
       $this->type = 'github';
-      $url_parts['path'] = ltrim($url_parts['path'], '/');
+      $url_parts[ 'path' ] = ltrim( $url_parts[ 'path' ], '/' );
       if ( preg_match( '/^([A-Za-z0-9\-_]+?)\/([A-Za-z0-9\-_]+?)\/blob\/([a-zA-Z0-9\-_]+?)\/(.*)$/', $url_parts[ 'path' ], $matches ) ) {
-        $this->owner = $matches[1];
-        $this->repo = $matches[2];
-        $this->branch = $matches[3];
-        $this->filename = $matches[4];
+        $this->owner = $matches[ 1 ];
+        $this->repo = $matches[ 2 ];
+        $this->branch = $matches[ 3 ];
+        $this->filename = $matches[ 4 ];
       }
-      else if (preg_match('/^([A-Za-z0-9\-_]+?)\/([A-Za-z0-9\-_]+?)$/', $url_parts['path'], $matches)) {
-        $this->owner = $matches[1];
-        $this->repo = $matches[2];
+      else if ( preg_match( '/^([A-Za-z0-9\-_]+?)\/([A-Za-z0-9\-_]+?)$/', $url_parts[ 'path' ], $matches ) ) {
+        $this->owner = $matches[ 1 ];
+        $this->repo = $matches[ 2 ];
         $this->branch = 'master';
-        $this->filename = 'readme.md'; 
+        $this->filename = 'readme.md';
       }
     }
     else if ( $url_parts[ 'host' ] == 'gist.github.com' ) {
@@ -116,12 +116,37 @@ class GitHubFile {
    * Returns the URL for the API endpoint to get the data requested. 
    */
   public function api_url() {
+    $url = false;
     if ( $this->is_github() ) {
-      //$url = 'https://api.github.com/repos/' . $this->get_owner() . '/'. $this->get_repo() . '/contents/' . :owner/:repo/contents/:path
+      $url = 'https://api.github.com/repos/' . $this->get_owner() . '/' . $this->get_repo() . '/contents/' . $this->get_filename();
+      if ( $this->branch != 'master' ) {
+        $url .= '?ref=' . $this->branch;
+      }
     }
     else if ( $this->is_gist() ) {
-      
+      $url = 'https://api.github.com/gists/' . $this->hash;
     }
+    return $url;
+  }
+
+  public function get( $api_key = '' ) {
+    $url = $this->api_url();
+    if ( $url === false ) {
+      throw new InvalidArgumentException( 'Cannot get API url' );
+    }
+
+    $headers = [];
+    if ( ! empty( $api_key ) ) {
+      $headers[ 'Authorization' ] = 'token ' . $api_key;
+    }
+
+    $result = wp_remote_get( $url, [ 'headers' => $headers ] );
+    return $result;
+  }
+
+  public function is_markdown() {
+    $ext = strtolower( pathinfo( $this->get_filename(), PATHINFO_EXTENSION ) );
+    return in_array( $ext, [ 'md', 'mkdn', 'mkd', 'markdown', 'mdown' ] );
   }
 
 }
