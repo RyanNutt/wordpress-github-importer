@@ -46,7 +46,7 @@ class GitHubFile {
     if ( $url_parts[ 'host' ] == 'github.com' ) {
       $this->type = 'github';
       $url_parts[ 'path' ] = ltrim( $url_parts[ 'path' ], '/' );
-      if ( preg_match( '/^([A-Za-z0-9\-_]+?)\/([A-Za-z0-9\-_]+?)\/blob\/([a-zA-Z0-9\-_]+?)\/(.*)$/', $url_parts[ 'path' ], $matches ) ) {
+      if ( preg_match( '/^([A-Za-z0-9\-_]+?)\/([A-Za-z0-9\-_]+?)\/blob\/(.+?)\/(.*)$/', $url_parts[ 'path' ], $matches ) ) {
         $this->owner = $matches[ 1 ];
         $this->repo = $matches[ 2 ];
         $this->branch = $matches[ 3 ];

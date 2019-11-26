@@ -47,6 +47,12 @@ if ( isset( $_POST[ 'github_importer' ] ) ) {
         </td>
       </tr>
       <tr>
+        <th><?php _e('Gist Transient Expiration', 'github-importer'); ?></th>
+        <td>
+          <input type="number" min="0" name="github_importer[gist_transient]" class="" value="<?php echo esc_attr(Import::get_option('gist_transient', 3600)); ?>">
+        </td>
+      </tr>
+      <tr>
         <th>
           <input type="submit" value="Save Changes" class="button button-primary button-large">
         </th>

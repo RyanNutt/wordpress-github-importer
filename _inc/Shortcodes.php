@@ -26,7 +26,7 @@ class Shortcodes {
     catch ( \Exception $ex ) {
       return 'Unable to parse GitHub URL';
     }
-
+    
     if ( empty( $cached_meta[ $gf->api_url() ] ) ) {
       $cached_meta[ $gf->api_url() ] = [
           'updated' => false,
