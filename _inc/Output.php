@@ -36,13 +36,13 @@ class Output {
     $contents = base64_decode( $contents );
     if ( ! class_exists( 'Parsedown' ) ) {
       require(__DIR__ . '/Parsedown.php');
-    } 
+    }
     $pd = new \Parsedown();
 
     $base_dir = dirname( $file_info->get_owner() . '/' . $file_info->get_repo() . '/blob/' . $file_info->get_branch() . '/' . $file_info->get_filename() ) . '/';
-    
+
     /* Fix relative image paths to use full URLs */
-    $contents = preg_replace_callback( '/!\[(.*?)\]\((.*?)\)/m', function($matches) use ($base_dir) { 
+    $contents = preg_replace_callback( '/!\[(.*?)\]\((.*?)\)/m', function($matches) use ($base_dir) {
       $url = isset( $matches[ 2 ] ) ? $matches[ 2 ] : '';
       if ( empty( $url ) ) {
         /* Just return whatever it already was */
@@ -51,15 +51,15 @@ class Output {
       else {
         if ( preg_match( '/^\/{1}/', $url ) ) {
           /* Leading slash, just append github.com */
-          return '![' . $matches[1] . '](https://github.com/' . $matches[2] . ')';
+          return '![' . $matches[ 1 ] . '](https://github.com/' . $matches[ 2 ] . ')';
         }
-        else if ( preg_match('/^\/\//', $matches[2]) || preg_match('/^https?:\/\//', $matches[2])) {
-          /* Starts with a scheme, just pass through */ 
-          return $matches[0];
+        else if ( preg_match( '/^\/\//', $matches[ 2 ] ) || preg_match( '/^https?:\/\//', $matches[ 2 ] ) ) {
+          /* Starts with a scheme, just pass through */
+          return $matches[ 0 ];
         }
         else {
-          /* Append to base url */ 
-          return '![' . $matches[1] . '](https://github.com/' . $base_dir . '/' . $matches[2] . ')';
+          /* Append to base url */
+          return '![' . $matches[ 1 ] . '](https://github.com/' . $base_dir . '/' . $matches[ 2 ] . ')';
         }
       }
     }, $contents );
@@ -82,7 +82,7 @@ class Output {
    * @return string
    */
   private static function from_text( $contents, GitHubFile $file_info ) {
-    return '<pre class="gh-text">' . base64_decode( $contents ) . '</pre>';
+    return '<pre class="gh-text">' . htmlentities( base64_decode( $contents ) ) . '</pre>';
   }
 
 }
