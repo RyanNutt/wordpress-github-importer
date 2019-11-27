@@ -4,7 +4,7 @@ Loads content from GitHub into WordPress posts and pages.
 
 ### Example
 
-You're looking at it. 
+You're looking at it. If you're on [Nutt.net](https://www.nutt.net/wordpress-github-importer/) this content is pulled from the `readme.md` file in the repository for this plugin. If you're on GitHub, you can head over to [my site](https://www.nutt.net/wordpress-github-importer/) to see it in action.
 
 ### Installation
 
