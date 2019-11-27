@@ -1,4 +1,5 @@
 <?php
+
 namespace Aelora\WordPress\GitHub;
 
 Import::init();
@@ -10,7 +11,7 @@ class Import {
   public static function init() {
     self::$settings = json_decode( get_option( 'github_importer', '[]' ), true );
 
-    add_action( 'admin_menu', [self::class, 'add_menu']);
+    add_action( 'admin_menu', [ self::class, 'add_menu' ] );
   }
 
   public static function add_menu() {
@@ -57,6 +58,28 @@ class Import {
     self::$settings[ $key ] = $value;
     if ( ! $defer ) {
       self::save_options();
+    }
+  }
+
+  /**
+   * Remove the cached GitHub files from a post, or optionall all posts
+   * 
+   * If a post id is passed, only the cache from that post is cleared. If
+   * a post_id is not passed cache is cleared from all posts. 
+   * 
+   * The cache will be rebuilt on the next page load. 
+   * 
+   * @param type $post_id
+   */
+  public static function clear_cache( $post_id = false ) {
+    if ( $post_id !== false ) {
+      /* Delete just from single post */
+      delete_post_meta( $post_id, '_github_importer' );
+    }
+    else {
+      /* Delete key from all posts */
+      global $wpdb;
+      $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key='_github_importer'" );
     }
   }
 
