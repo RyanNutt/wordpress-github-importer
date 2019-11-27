@@ -19,12 +19,18 @@ class GitHubFile {
   private $repo = false;
   private $filename = false;
   private $hash = false; // gist hash
+  private $url = false;
 
   public function __construct( $url = false ) {
     $this->set_url( $url ? $url : ''  );
   }
 
+  public function get_url() {
+    return $this->url;
+  }
+
   public function set_url( $url ) {
+    $this->url = $url;
     $this->type = false;
     $this->branch = false;
     $this->owner = false;
@@ -147,6 +153,24 @@ class GitHubFile {
   public function is_markdown() {
     $ext = strtolower( pathinfo( $this->get_filename(), PATHINFO_EXTENSION ) );
     return in_array( $ext, [ 'md', 'mkdn', 'mkd', 'markdown', 'mdown' ] );
+  }
+
+  /**
+   * Returns the URL directory that this file, or files, is in.
+   * 
+   * This includes everything except the filename, so a nested file will contain
+   * the director that it's in. 
+   */
+  public function base_url_dir() {
+    if ( $this->is_github() ) {
+      return 'https://github.com/' . $this->get_owner() . '/' . $this->get_repo() . '/blob/' . $this->get_branch() . '/' . dirname( $this->get_filename() ) . '/';
+    }
+    else if ( $this->is_gist() ) {
+      return 'https://gist.github.com/' . ( ! empty( $this->get_owner() ) ? '/' . $this->get_owner() : '') . '/' . $this->get_hash() . '/';
+    }
+    else {
+      throw new \Exception( 'This file does not appear to be either a GitHub or Gist address' );
+    }
   }
 
 }

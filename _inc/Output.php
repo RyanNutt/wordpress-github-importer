@@ -16,7 +16,7 @@ class Output {
       return '<div>' . $api_body[ 'message' ] . '</div>';
     }
     else if ( ! empty( $api_body[ 'content' ] ) ) {
-      if ( $file_info->is_markdown() ) {
+      if ( ($file_info->is_github() && $file_info->is_markdown()) || ($file_info->is_gist() && strtolower( $api_body[ 'language' ] ) == 'markdown') ) {
         return self::from_markdown( $api_body[ 'content' ], $file_info );
       }
       else {
@@ -33,7 +33,9 @@ class Output {
    * @return string
    */
   private static function from_markdown( $contents, GitHubFile $file_info ) {
-    $contents = base64_decode( $contents );
+    if ( $file_info->is_github() ) {
+      $contents = base64_decode( $contents );
+    }
     if ( ! class_exists( 'Parsedown' ) ) {
       require(__DIR__ . '/Parsedown.php');
     }
@@ -50,8 +52,8 @@ class Output {
       }
       else {
         if ( preg_match( '/^\/{1}/', $url ) ) {
-          /* Leading slash, just append github.com */
-          return '![' . $matches[ 1 ] . '](https://github.com/' . $matches[ 2 ] . ')';
+          /* Leading slash, just append github.com or gist.github.com */
+          return '![' . $matches[ 1 ] . '](https://' . ($file_info->is_gist() ? 'gist.' : '') . 'github.com/' . $matches[ 2 ] . ')';
         }
         else if ( preg_match( '/^\/\//', $matches[ 2 ] ) || preg_match( '/^https?:\/\//', $matches[ 2 ] ) ) {
           /* Starts with a scheme, just pass through */
@@ -59,7 +61,7 @@ class Output {
         }
         else {
           /* Append to base url */
-          return '![' . $matches[ 1 ] . '](https://github.com/' . $base_dir . '/' . $matches[ 2 ] . ')';
+          return '![' . $matches[ 1 ] . '](' . $file_info->base_url_dir() . $matches[ 2 ] . ')';
         }
       }
     }, $contents );
@@ -82,7 +84,10 @@ class Output {
    * @return string
    */
   private static function from_text( $contents, GitHubFile $file_info ) {
-    return '<pre class="gh-text">' . htmlentities( base64_decode( $contents ) ) . '</pre>';
+    if ( $file_info->is_github() ) {
+      $contents = base64_decode( $contents );
+    }
+    return '<pre class="gh-text">' . htmlentities( $contents ) . '</pre>';
   }
 
 }
