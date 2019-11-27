@@ -16,4 +16,12 @@
 require_once(__DIR__ . '/_inc/Import.php');
 require_once(__DIR__ . '/_inc/Shortcodes.php');
 require_once(__DIR__ . '/_inc/GitHubFile.php');
-require_once(__DIR__ . '/_inc/Output.php'); 
+require_once(__DIR__ . '/_inc/Output.php');
+
+if ( ! class_exists( '\Aelora\WordPress\GitHub\Smashing_Updater' ) ) {
+  include_once( plugin_dir_path( __FILE__ ) . '_inc/SmashingUpdater.php' );
+}
+$updater = new \Aelora\WordPress\GitHub\Smashing_Updater( __FILE__ );
+$updater->set_username( 'ryannutt' );
+$updater->set_repository( 'wordpress-github-importer' );
+$updater->initialize();
