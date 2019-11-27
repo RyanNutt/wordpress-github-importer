@@ -9,7 +9,7 @@ You're looking at it. If you're on [Nutt.net](https://www.nutt.net/wordpress-git
 ### Installation
 
 1. Download the zip file from GitHub
-2. Unzip into a subfolder in `/wp-content/plugins`. I use `/wp-content/plugins/github-importer/`, but any folder should work.
+2. Unzip into a subfolder in `/wp-content/plugins`. I use `/wp-content/plugins/wordpress-github-importer/`, but any folder should work.
 3. Activate the plugin
 
 ### Settings
