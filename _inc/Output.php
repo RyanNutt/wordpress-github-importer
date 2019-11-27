@@ -61,6 +61,9 @@ class Output {
         }
         else {
           /* Append to base url */
+          if ($file_info->is_github()) {
+            return '![' . $matches[1] . '](https://raw.githubusercontent.com/' . $file_info->get_owner() . '/' . $file_info->get_repo() . '/' . $file_info->get_branch() . '/' . $matches[2] . ')';
+          }
           return '![' . $matches[ 1 ] . '](' . $file_info->base_url_dir() . $matches[ 2 ] . ')';
         }
       }
