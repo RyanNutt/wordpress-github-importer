@@ -32,7 +32,7 @@ class Output {
    * @param \Aelora\WordPress\GitHub\GitHubFile $file_info
    * @return string
    */
-  private static function from_markdown( $contents, GitHubFile $file_info ) {
+  private static function from_markdown( $contents, GitHubFile $file_info ) { 
     if ( $file_info->is_github() ) {
       $contents = base64_decode( $contents );
     }
@@ -44,7 +44,7 @@ class Output {
     $base_dir = dirname( $file_info->get_owner() . '/' . $file_info->get_repo() . '/blob/' . $file_info->get_branch() . '/' . $file_info->get_filename() ) . '/';
 
     /* Fix relative image paths to use full URLs */
-    $contents = preg_replace_callback( '/!\[(.*?)\]\((.*?)\)/m', function($matches) use ($base_dir) {
+    $contents = preg_replace_callback( '/!\[(.*?)\]\((.*?)\)/m', function($matches) use ($base_dir, $file_info) {
       $url = isset( $matches[ 2 ] ) ? $matches[ 2 ] : '';
       if ( empty( $url ) ) {
         /* Just return whatever it already was */
