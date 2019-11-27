@@ -48,3 +48,13 @@ Posts that have embedded content from a GitHub repo act as webhooks.
 When GitHub sends a webhook request to a page with an embedded file the cache is cleared and refreshed next time the page is loaded.
 
 You also have the option under settings to have the plugin clear the cache for all posts when any webhook is triggered. This is useful if you've got one repository with multiple files embedded over many WordPress posts or pages so that you don't have to list every page as a webhook. 
+
+To set the webhook click on the Settings tab in your GitHub repo and then the Webhooks menu on the left side. You should see a form that looks like the following.
+
+![GitHub Webhook Settings](img/github-webhook.png)
+
+Payload URL is the permalink to the WordPress post where you're using the `[github_file]` shortcode. 
+
+Content type should be `application/json`, which is not the default.
+
+Secret must match the Webhook Secret setting that you setup earlier. 
