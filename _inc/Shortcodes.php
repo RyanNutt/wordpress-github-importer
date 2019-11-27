@@ -29,10 +29,10 @@ class Shortcodes {
       if ( array_key_exists( 'X-GitHub-Event', $headers ) && array_key_exists( 'X-GitHub-Delivery', $headers ) ) {
         /* Has the right headers, go ahead and process */
         $secret = Import::get_option( 'webhook_secret', '' );
-        if ( array_key_exists( 'X-GitHub-Signature', $headers ) || ! empty( $secret ) ) {
+        if ( array_key_exists( 'X-Hub-Signature', $headers ) || ! empty( $secret ) ) {
           /* Check the signature if it exists or if it's expected */
           $sig_check = 'sha1=' . hash_hmac( 'sha1', file_get_contents( 'php://input' ), $secret );
-          $github_signature = isset( $headers[ 'X-GitHub-Signature' ] ) ? $headers[ 'X-GitHub-Signature' ] : '';
+          $github_signature = isset( $headers[ 'X-Hub-Signature' ] ) ? $headers[ 'X-Hub-Signature' ] : '';
           if ( $sig_check != $github_signature ) {
             header( 'HTTP/1.1 401' );
             die( 'Signature does not match' );
