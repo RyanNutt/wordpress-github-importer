@@ -4,7 +4,7 @@
  * Plugin Name:       GitHub Importer
  * Plugin URI:        https://www.nutt.net
  * Description:       Import content from GitHub into your WordPress posts and pages
- * Version:           0.1
+ * Version:           0.1.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Ryan Nutt
