@@ -4,7 +4,7 @@
  * Plugin Name:       GitHub Importer
  * Plugin URI:        https://www.nutt.net
  * Description:       Import content from GitHub into your WordPress posts and pages
- * Version:           0.1.0
+ * Version:           0.1.1
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Ryan Nutt
@@ -24,4 +24,4 @@ if ( ! class_exists( '\Aelora\WordPress\GitHub\Smashing_Updater' ) ) {
 $updater = new \Aelora\WordPress\GitHub\Smashing_Updater( __FILE__ );
 $updater->set_username( 'ryannutt' );
 $updater->set_repository( 'wordpress-github-importer' );
-$updater->initialize();
+$updater->initialize(); 

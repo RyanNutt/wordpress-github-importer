@@ -18,19 +18,19 @@ class Smashing_Updater {
   private $authorize_token;
   private $github_response;
 
-  public function __construct( $file ) {
+  public function __construct( $file ) { 
 
     $this->file = $file;
 
-    add_action( 'admin_init', array( $this, 'set_plugin_properties' ) );
+    add_action( 'admin_init', array( $this, 'set_plugin_properties' ) , 5);
 
     return $this;
   }
 
-  public function set_plugin_properties() {
+  public function set_plugin_properties() { 
     $this->plugin = get_plugin_data( $this->file );
     $this->basename = plugin_basename( $this->file );
-    $this->active = is_plugin_active( $this->basename );
+    $this->active = is_plugin_active( $this->basename ); 
   }
 
   public function set_username( $username ) {
